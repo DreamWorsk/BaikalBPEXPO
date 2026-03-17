@@ -1,5 +1,26 @@
-# Python
+# Node.js / Expo
+node_modules/
+.expo/
+.expo-shared/
+*.log
+*.lock
+android/
+ios/
+web-build/
+dist/
+
+# Виртуальные окружения Python
+.venv/
+.venv-1/
+venv/
 backend/venv/
+
+# IDE
+.vscode/
+.idea/
+
+# Остальное (у вас уже есть)
+# Python
 backend/__pycache__/
 backend/*.pyc
 backend/.env
@@ -8,7 +29,7 @@ backend/*.log
 backend/instance/
 backend/.pytest_cache/
 
-# Модели (если они большие, лучше не хранить в Git)
+# Модели
 *.h5
 *.keras
 *.onnx
@@ -16,6 +37,6 @@ backend/.pytest_cache/
 backend/app/models/*.h5
 backend/app/models/class_names.txt
 
-# Если используете базу данных SQLite
+# Базы данных
 *.db
 *.sqlite3
