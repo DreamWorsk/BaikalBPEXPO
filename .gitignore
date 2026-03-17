@@ -1,41 +1,21 @@
-# Learn more https://docs.github.com/en/get-started/getting-started-with-git/ignoring-files
+# Python
+backend/venv/
+backend/__pycache__/
+backend/*.pyc
+backend/.env
+backend/.env.*
+backend/*.log
+backend/instance/
+backend/.pytest_cache/
 
-# dependencies
-node_modules/
+# Модели (если они большие, лучше не хранить в Git)
+*.h5
+*.keras
+*.onnx
+*.pb
+backend/app/models/*.h5
+backend/app/models/class_names.txt
 
-# Expo
-.expo/
-dist/
-web-build/
-expo-env.d.ts
-
-# Native
-.kotlin/
-*.orig.*
-*.jks
-*.p8
-*.p12
-*.key
-*.mobileprovision
-
-# Metro
-.metro-health-check*
-
-# debug
-npm-debug.*
-yarn-debug.*
-yarn-error.*
-
-# macOS
-.DS_Store
-*.pem
-
-# local env files
-.env*.local
-
-# typescript
-*.tsbuildinfo
-
-# generated native folders
-/ios
-/android
+# Если используете базу данных SQLite
+*.db
+*.sqlite3
