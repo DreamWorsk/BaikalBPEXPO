@@ -11,13 +11,16 @@ import {
 import { CameraView, useCameraPermissions } from 'expo-camera';
 import { Ionicons } from '@expo/vector-icons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { API_BASE_URL } from '../src/config'; // путь к вашему config.js
+import { API_BASE_URL } from '../src/config';
+import ResultModal from './ResultModal';
 
 export default function CameraScreen({ navigation }) {
   const [permission, requestPermission] = useCameraPermissions();
   const [facing, setFacing] = useState('back');
   const [photo, setPhoto] = useState(null);
   const [isUploading, setIsUploading] = useState(false);
+  const [resultModalVisible, setResultModalVisible] = useState(false);
+  const [lastResult, setLastResult] = useState(null);
   const cameraRef = useRef(null);
 
   useEffect(() => {
@@ -62,9 +65,7 @@ export default function CameraScreen({ navigation }) {
   const analyzePhoto = async (uri) => {
     setIsUploading(true);
     try {
-      // Получаем токен (если эндпоинт защищён)
       const token = await AsyncStorage.getItem('access_token');
-
       const formData = new FormData();
       formData.append('file', {
         uri: uri,
@@ -76,8 +77,6 @@ export default function CameraScreen({ navigation }) {
         method: 'POST',
         headers: {
           'Content-Type': 'multipart/form-data',
-          // Если эндпоинт требует авторизацию:
-          // 'Authorization': `Bearer ${token}`,
         },
         body: formData,
       });
@@ -87,11 +86,9 @@ export default function CameraScreen({ navigation }) {
         throw new Error(result.detail || 'Ошибка анализа');
       }
 
-      Alert.alert(
-        result.is_plastic ? '✅ Пластик обнаружен' : '❌ Пластик не обнаружен',
-        `Объект: ${result.object_type || 'неизвестно'}\nУверенность: ${(result.confidence * 100).toFixed(1)}%`,
-        [{ text: 'OK', onPress: () => setPhoto(null) }]
-      );
+      setLastResult(result);
+      setResultModalVisible(true);
+      setPhoto(null); // очищаем превью после показа результата
     } catch (error) {
       Alert.alert('Ошибка', error.message);
       console.error(error);
@@ -156,6 +153,11 @@ export default function CameraScreen({ navigation }) {
           </View>
         </CameraView>
       )}
+      <ResultModal
+        visible={resultModalVisible}
+        result={lastResult}
+        onClose={() => setResultModalVisible(false)}
+      />
     </View>
   );
 }

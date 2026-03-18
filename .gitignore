@@ -23,19 +23,9 @@ backend/venv/
 # Python
 backend/__pycache__/
 backend/*.pyc
-backend/.env
-backend/.env.*
 backend/*.log
 backend/instance/
 backend/.pytest_cache/
-
-# Модели
-*.h5
-*.keras
-*.onnx
-*.pb
-backend/app/models/*.h5
-backend/app/models/class_names.txt
 
 # Базы данных
 *.db
