@@ -15,8 +15,9 @@
       "supportsTablet": true
     },
     "android": {
-      "permissions": ["android.permission.INTERNET"],
-      "usesCleartextTraffic": true,
+      "permissions": [
+        "android.permission.INTERNET"
+      ],
       "adaptiveIcon": {
         "backgroundColor": "#E6F4FE",
         "foregroundImage": "./assets/images/android-icon-foreground.png",
@@ -32,6 +33,16 @@
       "eas": {
         "projectId": "e9422e8a-395f-47f0-9482-e91ec9a7e982"
       }
+    },
+    "plugins": [
+  [
+    "expo-build-properties",
+    {
+      "android": {
+        "usesCleartextTraffic": true
+      }
     }
+  ]
+]
   }
 }
