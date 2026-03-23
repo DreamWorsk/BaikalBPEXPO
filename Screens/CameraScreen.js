@@ -63,39 +63,46 @@ export default function CameraScreen({ navigation }) {
   };
 
   const analyzePhoto = async (uri) => {
-    setIsUploading(true);
-    try {
-      const token = await AsyncStorage.getItem('access_token');
-      const formData = new FormData();
-      formData.append('file', {
-        uri: uri,
-        type: 'image/jpeg',
-        name: 'photo.jpg',
-      });
-
-      const response = await fetch(`${API_BASE_URL}/detect/`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
-        body: formData,
-      });
-
-      const result = await response.json();
-      if (!response.ok) {
-        throw new Error(result.detail || 'Ошибка анализа');
-      }
-
-      setLastResult(result);
-      setResultModalVisible(true);
-      setPhoto(null); // очищаем превью после показа результата
-    } catch (error) {
-      Alert.alert('Ошибка', error.message);
-      console.error(error);
-    } finally {
-      setIsUploading(false);
+  setIsUploading(true);
+  try {
+    const token = await AsyncStorage.getItem('access_token');
+    if (!token) {
+      Alert.alert('Ошибка', 'Вы не авторизованы. Пожалуйста, войдите снова.');
+      navigation.replace('Auth');
+      return;
     }
-  };
+
+    const formData = new FormData();
+    formData.append('file', {
+      uri: uri,
+      type: 'image/jpeg',
+      name: 'photo.jpg',
+    });
+
+    const response = await fetch(`${API_BASE_URL}/detect/`, {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        // 'Content-Type' не указываем, иначе FormData не установит границы
+      },
+      body: formData,
+    });
+
+    const result = await response.json();
+    if (!response.ok) {
+      throw new Error(result.detail || 'Ошибка анализа');
+    }
+
+    setLastResult(result);
+    setResultModalVisible(true);
+    setPhoto(null);
+  } catch (error) {
+    Alert.alert('Ошибка', error.message);
+    console.error(error);
+  } finally {
+    setIsUploading(false);
+  }
+};
 
   const usePhoto = () => {
     analyzePhoto(photo);

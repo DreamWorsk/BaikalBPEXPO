@@ -1,15 +1,21 @@
-# backend/app/routers/detection.py
-
-from fastapi import APIRouter, File, UploadFile, HTTPException
+from fastapi import APIRouter, File, UploadFile, HTTPException, Depends
+from sqlalchemy.ext.asyncio import AsyncSession
 from .. import ml_model, plastic_data
 from ..schemas import DetectionResult, PlasticInfo
+from ..dependencies import get_current_user
+from ..database import get_db
+from ..models import User
 
 router = APIRouter(prefix="/detect", tags=["detection"])
 
 PLASTIC_CLASSES = ml_model.class_names  # если все классы – пластик
 
 @router.post("/", response_model=DetectionResult)
-async def detect_plastic(file: UploadFile = File(...)):
+async def detect_plastic(
+    file: UploadFile = File(...),
+    current_user: User = Depends(get_current_user),
+    db: AsyncSession = Depends(get_db)
+):
     if not file.content_type.startswith("image/"):
         raise HTTPException(status_code=400, detail="File must be an image")
 
@@ -24,6 +30,10 @@ async def detect_plastic(file: UploadFile = File(...)):
         if is_plastic:
             info = plastic_data.get_plastic_info(class_name)
             plastic_info = PlasticInfo(**info)
+            # Начисляем 1 балл
+            current_user.balance += 1
+            await db.commit()
+            await db.refresh(current_user)
 
         return DetectionResult(
             is_plastic=is_plastic,

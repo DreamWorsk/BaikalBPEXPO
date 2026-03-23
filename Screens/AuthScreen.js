@@ -85,7 +85,7 @@ export default function AuthScreen({ navigation, setIsLoggedIn }) {
 
   return (
     <ImageBackground
-      source={require('../assets/images/background.png')} // замените на свой путь
+      source={require('../assets/images/background.jpg')} // замените на свой путь
       style={styles.background}
       resizeMode="cover"
     >

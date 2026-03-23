@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import {
   View,
   Text,
@@ -9,10 +9,38 @@ import {
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { useNavigation } from '@react-navigation/native'; // <-- импортируем хук
+import { useNavigation, useFocusEffect } from '@react-navigation/native';
+import { API_BASE_URL } from '../src/config';
 
 export default function HomeScreen({ setIsLoggedIn }) {
-  const navigation = useNavigation(); // <-- получаем navigation
+  const navigation = useNavigation();
+  const [balance, setBalance] = useState(null);
+
+  useEffect(() => {
+    fetchBalance();
+  }, []);
+
+useFocusEffect(
+  useCallback(() => {
+    fetchBalance();
+  }, [])
+);
+  const fetchBalance = async () => {
+    try {
+      const token = await AsyncStorage.getItem('access_token');
+      if (!token) return;
+
+      const response = await fetch(`${API_BASE_URL}/users/balance`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      if (response.ok) {
+        const data = await response.json();
+        setBalance(data.balance);
+      }
+    } catch (error) {
+      console.error('Balance fetch error:', error);
+    }
+  };
 
   const handleLogout = async () => {
     await AsyncStorage.removeItem('access_token');
@@ -21,21 +49,24 @@ export default function HomeScreen({ setIsLoggedIn }) {
 
   return (
     <ImageBackground
-      source={require('../assets/images/background.png')}
+      source={require('../assets/images/background.jpg')}
       style={styles.background}
       resizeMode="cover"
     >
       <View style={styles.container}>
-        <TouchableOpacity style={styles.logoutButton} onPress={handleLogout}>
-          <Ionicons name="log-out-outline" size={24} color="white" />
-        </TouchableOpacity>
+        <View style={styles.topBar}>
+          <Text style={styles.balance}>💰 {balance !== null ? balance : '...'}</Text>
+          <TouchableOpacity style={styles.logoutButton} onPress={handleLogout}>
+            <Ionicons name="log-out-outline" size={24} color="white" />
+          </TouchableOpacity>
+        </View>
 
         <View style={styles.content} />
 
         <View style={styles.bottomNav}>
           <TouchableOpacity
             style={styles.navItem}
-            onPress={() => Alert.alert('Переход в личный кабинет')}
+            onPress={() => navigation.navigate('Profile')}
           >
             <Ionicons name="person-outline" size={28} color="white" />
             <Text style={styles.navText}>Профиль</Text>
@@ -43,7 +74,7 @@ export default function HomeScreen({ setIsLoggedIn }) {
 
           <TouchableOpacity
             style={styles.navItem}
-            onPress={() => navigation.navigate('Camera')} // <-- теперь работает
+            onPress={() => navigation.navigate('Camera')}
           >
             <Ionicons name="camera-outline" size={28} color="white" />
             <Text style={styles.navText}>Камера</Text>
@@ -65,7 +96,23 @@ export default function HomeScreen({ setIsLoggedIn }) {
 const styles = StyleSheet.create({
   background: { flex: 1, width: '100%' },
   container: { flex: 1, backgroundColor: 'rgba(0,0,0,0.4)' },
-  logoutButton: { position: 'absolute', top: 40, right: 20, zIndex: 10, padding: 8 },
+  topBar: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingTop: 40,
+    paddingHorizontal: 20,
+  },
+  balance: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: 'white',
+    backgroundColor: 'rgba(0,0,0,0.5)',
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 20,
+  },
+  logoutButton: { padding: 8 },
   content: { flex: 1 },
   bottomNav: {
     flexDirection: 'row',

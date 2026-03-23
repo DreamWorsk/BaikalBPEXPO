@@ -23,7 +23,8 @@ async def register(user_data: schemas.UserCreate, db: AsyncSession = Depends(get
         username=user_data.username,
         email=user_data.email,
         hashed_password=hashed_password,
-        role=2  # обычный пользователь
+        role=2, # обычный пользователь
+        balance=10  # приветственный бонус
     )
     db.add(new_user)
     await db.commit()

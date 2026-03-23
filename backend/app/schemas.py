@@ -1,5 +1,6 @@
 from pydantic import BaseModel, EmailStr, Field
 from typing import Optional
+from datetime import datetime
 
 class UserBase(BaseModel):
     username: str
@@ -11,7 +12,9 @@ class UserCreate(UserBase):
 class UserOut(UserBase):
     id: int
     role: int
-    created_at: Optional[str]
+    created_at: Optional[datetime]
+    avatar_url: Optional[str]
+    balance: int   # <-- добавить
 
     class Config:
         from_attributes = True
