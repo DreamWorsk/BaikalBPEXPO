@@ -153,8 +153,8 @@ export default function ProfileScreen({ navigation }) {
 
           <View style={styles.infoRow}>
             <Ionicons name="person-outline" size={24} color="#2c3e50" />
-            <Text style={styles.label}>Логин:</Text>
-            <Text style={styles.value}>{user.username}</Text>
+            <Text style={styles.label}>Имя:</Text>
+             <Text style={styles.value}>{user.display_name || user.username}</Text>
           </View>
           <View style={styles.infoRow}>
             <Ionicons name="mail-outline" size={24} color="#2c3e50" />

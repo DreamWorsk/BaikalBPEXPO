@@ -74,7 +74,7 @@ export default function AuthScreen({ navigation, setIsLoggedIn }) {
           throw new Error(data.detail || 'Ошибка регистрации');
         }
         await AsyncStorage.setItem('access_token', data.access_token);
-        setIsLoggedIn(true);
+        navigation.replace('Nickname');
       } catch (error) {
         Alert.alert('Ошибка', error.message);
       } finally {

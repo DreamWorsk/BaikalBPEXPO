@@ -10,4 +10,5 @@ class User(Base):
     role = Column(Integer, default=2)
     created_at = Column(DateTime(timezone=True), server_default=func.now())
     avatar_url = Column(String, nullable=True)
-    balance = Column(Integer, default=0, nullable=False)  # <-- новое поле
+    balance = Column(Integer, default=0, nullable=False)
+    display_name = Column(String, nullable=True)

@@ -7,6 +7,7 @@ import AuthScreen from './Screens/AuthScreen';
 import HomeScreen from './Screens/HomeScreen';
 import CameraScreen from './Screens/CameraScreen';
 import ProfileScreen from './Screens/ProfileScreen';  // импортируем
+import NicknameScreen from './Screens/NicknameScreen';
 
 const Stack = createStackNavigator();
 
@@ -28,20 +29,25 @@ export default function App() {
   return (
     <NavigationContainer>
       <Stack.Navigator screenOptions={{ headerShown: false }}>
-        {isLoggedIn ? (
-          <>
-            <Stack.Screen name="Home">
-              {props => <HomeScreen {...props} setIsLoggedIn={setIsLoggedIn} />}
-            </Stack.Screen>
-            <Stack.Screen name="Camera" component={CameraScreen} />
-            <Stack.Screen name="Profile" component={ProfileScreen} />
-          </>
-        ) : (
-          <Stack.Screen name="Auth">
-            {props => <AuthScreen {...props} setIsLoggedIn={setIsLoggedIn} />}
-          </Stack.Screen>
-        )}
-      </Stack.Navigator>
+  {isLoggedIn ? (
+    <>
+      <Stack.Screen name="Home">
+        {props => <HomeScreen {...props} setIsLoggedIn={setIsLoggedIn} />}
+      </Stack.Screen>
+      <Stack.Screen name="Camera" component={CameraScreen} />
+      <Stack.Screen name="Profile" component={ProfileScreen} />
+    </>
+  ) : (
+    <>
+      <Stack.Screen name="Auth">
+        {props => <AuthScreen {...props} setIsLoggedIn={setIsLoggedIn} />}
+      </Stack.Screen>
+      <Stack.Screen name="Nickname">
+        {props => <NicknameScreen {...props} setIsLoggedIn={setIsLoggedIn} />}
+      </Stack.Screen>
+    </>
+  )}
+</Stack.Navigator>
     </NavigationContainer>
   );
 }

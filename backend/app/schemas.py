@@ -15,6 +15,7 @@ class UserOut(UserBase):
     created_at: Optional[datetime]
     avatar_url: Optional[str]
     balance: int   # <-- добавить
+    display_name: Optional[str]
 
     class Config:
         from_attributes = True
